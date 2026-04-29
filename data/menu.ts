@@ -92,7 +92,7 @@ export const menuData: MenuCategory[] = [
   {
     id: 'pizza-cones',
     title: 'Pizza Cones',
-    subtitle: 'Pizza in a cone — a Wings Shack original!',
+    subtitle: 'Pizza in a cone — a Wing Shack original!',
     items: [
       { name: 'Cheese Pizza Cone',          price: '$5.99' },
       { name: 'Pepperoni Pizza Cone',       price: '$6.99' },

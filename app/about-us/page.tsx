@@ -6,7 +6,7 @@ import { CheckCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: "Learn the story of Wings Shack — 37+ years of championship wings in South Carolina's Midlands.",
+  description: "Learn the story of Wing Shack — 37+ years of championship wings in South Carolina's Midlands.",
 }
 
 const features = [
@@ -33,7 +33,7 @@ export default function AboutPage() {
       {/* Hero */}
       <div className="bg-brand-black py-20 px-4 text-center">
         <h1 className="font-display text-7xl md:text-8xl uppercase text-white tracking-wide leading-none">
-          About <span className="text-brand-red">Wings Shack</span>
+          About <span className="text-brand-red">Wing Shack</span>
         </h1>
         <p className="mt-4 text-white/70 text-lg max-w-xl mx-auto">
           37+ years of serving the Midlands with championship wings.
@@ -50,7 +50,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-brand-gray leading-relaxed">
               <p>
-                Wings Shack was born out of a simple belief: great wings should be accessible, affordable,
+                Wing Shack was born out of a simple belief: great wings should be accessible, affordable,
                 and absolutely delicious. Since 1987, we&apos;ve been perfecting our craft in the heart of
                 South Carolina&apos;s Midlands — and our community keeps coming back for more.
               </p>
@@ -62,7 +62,7 @@ export default function AboutPage() {
               <p>
                 We offer 26 signature sauces and 10 dry rubs — from crowd-pleasers like Honey Mustard
                 and Southern BBQ to heat-seekers like Nuclear and Devil Dust. There&apos;s something
-                for every palate at Wings Shack.
+                for every palate at Wing Shack.
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function AboutPage() {
             <div className="relative h-64 w-full">
               <Image
                 src="/images/winging-with-rocky.jpg"
-                alt="Winging it with Rocky — Wings Shack mascot"
+                alt="Winging it with Rocky — Wing Shack mascot"
                 fill
                 loading="lazy"
                 className="object-cover object-center"
@@ -162,7 +162,7 @@ export default function AboutPage() {
             Join Our <span className="text-brand-red">Flock</span>
           </h2>
           <p className="text-white/70 text-lg mb-10">
-            Wings Shack is always looking for passionate people to join our growing team.
+            Wing Shack is always looking for passionate people to join our growing team.
             Whether you&apos;re in the kitchen or front-of-house, we&apos;d love to have you.
           </p>
           <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-left">

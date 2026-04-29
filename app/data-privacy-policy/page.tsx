@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Data Privacy Policy',
-  description: 'Wings Shack Data Privacy Policy',
+  description: 'Wing Shack Data Privacy Policy',
 }
 
 export default function PrivacyPolicyPage() {
@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="font-display text-3xl uppercase tracking-wide text-brand-black mt-8 mb-3">Information We Collect</h2>
         <p className="text-brand-gray leading-relaxed">
-          Wings Shack collects information you voluntarily provide, such as your name, email address,
+          Wing Shack collects information you voluntarily provide, such as your name, email address,
           and phone number when you fill out a contact or catering inquiry form. We do not collect
           payment information directly on this site.
         </p>

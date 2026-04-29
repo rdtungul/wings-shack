@@ -22,7 +22,7 @@ export default function LocationsStrip() {
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           title="Find Us Near You"
-          subtitle="Wings Shack is growing across South Carolina. Find your nearest location."
+          subtitle="Wing Shack is growing across South Carolina. Find your nearest location."
         />
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

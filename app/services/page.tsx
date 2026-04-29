@@ -5,7 +5,7 @@ import { UtensilsCrossed, ShoppingBag, Bike, Users } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'Wings Shack offers dine-in, takeout, delivery, and catering services across South Carolina.',
+  description: 'Wing Shack offers dine-in, takeout, delivery, and catering services across South Carolina.',
 }
 
 const services = [
@@ -14,7 +14,7 @@ const services = [
     icon: UtensilsCrossed,
     title: 'Dine-In',
     description:
-      'Come in and enjoy the full Wings Shack experience. Our casual, welcoming atmosphere is perfect for families, groups, and solo diners alike. Grab a booth and dig in.',
+      'Come in and enjoy the full Wing Shack experience. Our casual, welcoming atmosphere is perfect for families, groups, and solo diners alike. Grab a booth and dig in.',
     features: ['Spacious seating', 'Family-friendly', 'All menu items available', 'Fresh sauces at every table'],
     cta: { label: 'Find a Location', href: '/contact-us' },
     image: '/images/dine-in.jpeg',
@@ -34,7 +34,7 @@ const services = [
     icon: Bike,
     title: 'Delivery',
     description:
-      'Can\'t make it in? We deliver! Check your delivery zone and get Wings Shack brought right to your door, piping hot and ready to eat.',
+      'Can\'t make it in? We deliver! Check your delivery zone and get Wing Shack brought right to your door, piping hot and ready to eat.',
     features: ['Delivered hot & fresh', 'Check zone availability', 'Easy online ordering', 'Track your order'],
     cta: { label: 'Order Delivery', href: '/contact-us' },
     image: '/images/wings-closeup.jpeg',
@@ -44,7 +44,7 @@ const services = [
     icon: Users,
     title: 'Catering',
     description:
-      'Feeding a crowd? Wings Shack catering is the move. From corporate lunches to wedding receptions, we bring the wings to you — any size, any event.',
+      'Feeding a crowd? Wing Shack catering is the move. From corporate lunches to wedding receptions, we bring the wings to you — any size, any event.',
     features: ['50–250+ piece packs', 'Multiple sauce options', 'Corporate & private events', 'Call ahead pricing'],
     cta: { label: 'Get a Quote', href: '/contact-us' },
     image: '/images/catering.png',

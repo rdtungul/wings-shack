@@ -18,7 +18,7 @@ const reasons = [
     icon: MapPin,
     title: 'Convenient',
     description:
-      'Multiple locations across the Midlands with dine-in, takeout, and delivery options. Wings Shack is always close by.',
+      'Multiple locations across the Midlands with dine-in, takeout, and delivery options. Wing Shack is always close by.',
   },
 ]
 
@@ -27,7 +27,7 @@ export default function WhyChooseUs() {
     <section className="py-20 px-4 bg-brand-cream">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
-          title="Why Wings Shack?"
+          title="Why Wing Shack?"
           subtitle="We've been the Midlands' go-to wing spot for over 37 years — and here's why."
         />
 

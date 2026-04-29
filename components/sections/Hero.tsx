@@ -7,7 +7,7 @@ export default function Hero() {
       {/* Hero background image */}
       <Image
         src="/images/hero-wings.jpeg"
-        alt="Wings Shack wings"
+        alt="Wing Shack wings"
         fill
         priority
         className="object-cover object-center"

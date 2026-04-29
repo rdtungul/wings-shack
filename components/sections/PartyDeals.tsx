@@ -36,7 +36,7 @@ export default function PartyDeals() {
       {/* Background image */}
       <Image
         src="/images/party-pack.png"
-        alt="Wings Shack party pack"
+        alt="Wing Shack party pack"
         fill
         loading="lazy"
         className="object-cover object-center opacity-10"

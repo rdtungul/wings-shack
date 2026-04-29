@@ -25,13 +25,13 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <Image
                 src="/images/logo.png"
-                alt="Wings Shack logo"
+                alt="Wing Shack logo"
                 width={56}
                 height={56}
                 className="h-14 w-14 object-contain"
               />
               <span className="font-display text-3xl uppercase tracking-wide text-white leading-none">
-                Wings Shack
+                Wing Shack
               </span>
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
@@ -113,7 +113,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/40">
-          <p>&copy; {new Date().getFullYear()} Wings Shack. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Wing Shack. All rights reserved.</p>
           <Link href="/data-privacy-policy" className="hover:text-white/70 transition-colors">
             Data Privacy Policy
           </Link>

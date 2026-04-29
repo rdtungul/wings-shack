@@ -28,7 +28,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center shrink-0">
             <Image
               src="/images/logo.png"
-              alt="Wings Shack"
+              alt="Wing Shack"
               width={100}
               height={100}
               className="h-[100px] w-[100px] object-contain"

@@ -27,7 +27,7 @@ const featured = [
   },
   {
     title: 'Pizza Cones',
-    description: 'A Wings Shack original — pizza in a crispy waffle cone. Kids love it!',
+    description: 'A Wing Shack original — pizza in a crispy waffle cone. Kids love it!',
     badge: 'Unique',
     price: 'From $5.99',
     image: '/images/pizza-cone.jpg',

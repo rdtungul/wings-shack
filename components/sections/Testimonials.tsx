@@ -8,7 +8,7 @@ export default function Testimonials() {
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           title="What Our Fans Say"
-          subtitle="Don't take our word for it — here's what the Wings Shack family has to say."
+          subtitle="Don't take our word for it — here's what the Wing Shack family has to say."
         />
 
         <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8">

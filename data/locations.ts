@@ -13,14 +13,14 @@ export const locations: Location[] = [
     address: '1305 Knox Abbott Drive, Cayce SC 29033',
     phone: '803-661-6896',
     email: 'wingshack.cayce@gmail.com',
-    facebook: 'Wings Shack - Cayce',
+    facebook: 'Wing Shack - Cayce',
     status: 'open',
   },
   {
     name: 'Lancaster, SC',
     address: '1352 Reece Road, Lancaster, SC 29720',
     email: 'wingshack.lancaster@gmail.com',
-    facebook: 'Wings Shack - Lancaster SC',
+    facebook: 'Wing Shack - Lancaster SC',
     status: 'opening-soon',
   },
   {

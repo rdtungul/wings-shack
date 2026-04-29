@@ -17,12 +17,12 @@ const bebas = Bebas_Neue({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Wings Shack — Best Wings in the Midlands',
-    template: '%s | Wings Shack',
+    default: 'Wing Shack — Best Wings in the Midlands',
+    template: '%s | Wing Shack',
   },
   description:
-    'Wings Shack has been serving championship wings in South Carolina for over 37 years. Traditional & boneless wings, 26 sauces, 10 dry rubs, pizza cones, and party packs.',
-  keywords: ['wings', 'chicken wings', 'South Carolina', 'Cayce', 'Lancaster', 'Columbia', 'Wings Shack'],
+    'Wing Shack has been serving championship wings in South Carolina for over 37 years. Traditional & boneless wings, 26 sauces, 10 dry rubs, pizza cones, and party packs.',
+  keywords: ['wings', 'chicken wings', 'South Carolina', 'Cayce', 'Lancaster', 'Columbia', 'Wing Shack'],
 }
 
 export default function RootLayout({

@@ -4,7 +4,7 @@ import MenuCategory from '@/components/menu/MenuCategory'
 
 export const metadata: Metadata = {
   title: 'Menu',
-  description: 'Browse the full Wing Shack menu — wings, meal deals, sides, pizzas, pizza cones, desserts, drinks, and party packs.',
+  description: 'Browse the full Wing Shack menu — taters, boulders, sides, desserts, drinks, and more. 25 sauces and 9 dry rubs.',
 }
 
 export default function MenuPage() {
@@ -16,7 +16,7 @@ export default function MenuPage() {
           Our <span className="text-brand-red">Menu</span>
         </h1>
         <p className="mt-4 text-white/70 text-lg max-w-xl mx-auto">
-          26 sauces. 10 dry rubs. Something for everyone.
+          25 sauces. 9 dry rubs. Something for everyone.
         </p>
       </div>
 

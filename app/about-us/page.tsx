@@ -10,21 +10,21 @@ export const metadata: Metadata = {
 }
 
 const features = [
-  '26 signature sauces & 10 dry rubs made in-house',
+  '25 signature sauces & 9 dry rubs made in-house',
   'Fresh, never frozen wings — cooked to order',
   'Family-friendly atmosphere with dine-in seating',
-  'Party packs for any size gathering',
-  'Pizza cones, loaded taters, and specialty sides',
+  'Boulders — loaded baked potatoes done right',
+  'Taters, sides, desserts, and specialty drinks',
   'Multiple Midlands locations & growing',
 ]
 
 const fanFavorites = [
+  { name: 'Garbage Fries',          image: '/images/butterfly-fries.png' },
   { name: 'Mango Habanero Wings',   image: '/images/wings-sauce.jpg' },
-  { name: 'Smoke N\' Gamecock BBQ', image: '/images/wings-closeup.jpeg' },
-  { name: 'Parmesan Garlic Wings',  image: '/images/wings-platter.jpeg' },
-  { name: 'Pizza Cones',            image: '/images/pizza-cone.jpg' },
-  { name: 'Loaded Tater Tots',      image: '/images/sweet-potato-fries.jpg' },
-  { name: 'Lemon Pepper Wings',     image: '/images/wing-flavors.jpg' },
+  { name: 'Sweet Potato Fries',     image: '/images/sweet-potato-fries.jpg' },
+  { name: 'Mozzarella Sticks',      image: '/images/mozzarella-sticks.jpg' },
+  { name: 'Brownie',                image: '/images/brownie.png' },
+  { name: 'Lemon Pepper Wings',     image: '/images/wings-closeup.jpeg' },
 ]
 
 export default function AboutPage() {
@@ -60,7 +60,7 @@ export default function AboutPage() {
                 a symbol of the bold, no-fuss wing culture we champion every day.
               </p>
               <p>
-                We offer 26 signature sauces and 10 dry rubs — from crowd-pleasers like Honey Mustard
+                We offer 25 signature sauces and 9 dry rubs — from crowd-pleasers like Honey Mustard
                 and Southern BBQ to heat-seekers like Nuclear and Devil Dust. There&apos;s something
                 for every palate at Wing Shack.
               </p>
@@ -83,11 +83,11 @@ export default function AboutPage() {
             <div className="font-display text-3xl uppercase text-brand-black mt-2">Years of Wings</div>
             <div className="mt-6 grid grid-cols-2 gap-4 text-center">
               <div className="bg-white rounded-xl p-4">
-                <div className="font-display text-4xl text-brand-red">26</div>
+                <div className="font-display text-4xl text-brand-red">25</div>
                 <div className="text-sm text-brand-gray">Signature Sauces</div>
               </div>
               <div className="bg-white rounded-xl p-4">
-                <div className="font-display text-4xl text-brand-red">10</div>
+                <div className="font-display text-4xl text-brand-red">9</div>
                 <div className="text-sm text-brand-gray">Dry Rubs</div>
               </div>
               <div className="bg-white rounded-xl p-4">

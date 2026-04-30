@@ -17,7 +17,7 @@ const services = [
       'Come in and enjoy the full Wing Shack experience. Our casual, welcoming atmosphere is perfect for families, groups, and solo diners alike. Grab a booth and dig in.',
     features: ['Spacious seating', 'Family-friendly', 'All menu items available', 'Fresh sauces at every table'],
     cta: { label: 'Find a Location', href: '/contact-us' },
-    image: '/images/dine-in.jpeg',
+    image: '/images/flyer-menu.png',
   },
   {
     id: 'Takeout',
@@ -27,7 +27,7 @@ const services = [
       'Call ahead or order in-store — your wings will be hot and ready when you are. Perfect for busy nights, last-minute lunches, or game-day pickups.',
     features: ['Call-ahead ordering', 'Fast pickup window', 'Secure packaging', 'Full menu available'],
     cta: { label: 'Call to Order', href: '/contact-us' },
-    image: '/images/takeout.jpeg',
+    image: '/images/dine-in.jpeg',
   },
   {
     id: 'Delivery',
@@ -37,7 +37,7 @@ const services = [
       'Can\'t make it in? We deliver! Check your delivery zone and get Wing Shack brought right to your door, piping hot and ready to eat.',
     features: ['Delivered hot & fresh', 'Check zone availability', 'Easy online ordering', 'Track your order'],
     cta: { label: 'Order Delivery', href: '/contact-us' },
-    image: '/images/wings-closeup.jpeg',
+    image: '/images/takeout.jpeg',
   },
   {
     id: 'Catering',

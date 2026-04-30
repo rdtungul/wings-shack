@@ -28,8 +28,8 @@ export default function Hero() {
           <span className="text-brand-red">With Rocky</span>
         </h1>
         <p className="text-white/80 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
-          26 signature sauces. 10 dry rubs. Traditional &amp; boneless wings, party packs,
-          pizza cones, and more — all made fresh to order.
+          25 signature sauces. 9 dry rubs. Taters, boulders, sides, desserts,
+          drinks, and more — all made fresh to order.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button href="/menu" variant="primary" className="text-base px-8 py-4">

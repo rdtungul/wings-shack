@@ -5,46 +5,46 @@ import Badge from '@/components/ui/Badge'
 
 const featured = [
   {
-    title: 'Traditional Wings',
-    description: 'Bone-in wings tossed in your choice of 26 sauces or 10 dry rubs.',
+    title: 'Garbage Fries',
+    description: 'Our loaded fry masterpiece — piled high and packed with flavor.',
+    badge: 'Must Try',
+    price: '$9.99',
+    image: '/images/butterfly-fries.png',
+  },
+  {
+    title: 'Mango Habanero Wings',
+    description: 'Sweet heat that builds with every bite — one of our most-ordered sauces.',
     badge: 'Fan Favorite',
-    price: 'From $8.99',
+    price: 'Ask in store',
     image: '/images/wings-sauce.jpg',
   },
   {
-    title: 'Boneless Wings',
-    description: 'All the flavor, none of the bones. Perfect for quick snacking.',
+    title: 'Sweet Potato Fries',
+    description: 'Golden, crispy sweet potato fries — a perfect sweet-and-savory side.',
     badge: 'Popular',
-    price: 'From $9.99',
+    price: '$4.99',
+    image: '/images/sweet-potato-fries.jpg',
+  },
+  {
+    title: 'Mozzarella Sticks',
+    description: 'Crispy on the outside, melty on the inside. Available in 3 or 6 pc.',
+    badge: 'Crowd Pleaser',
+    price: 'From $3.99',
+    image: '/images/mozzarella-sticks.jpg',
+  },
+  {
+    title: 'Brownie',
+    description: 'Rich, fudgy brownie — add your choice of caramel, chocolate, or raspberry drizzle.',
+    badge: 'Sweet Treat',
+    price: '$3.29',
+    image: '/images/brownie.png',
+  },
+  {
+    title: 'Lemon Pepper Wings',
+    description: 'Tangy lemon zest meets bold pepper — a classic Wing Shack dry rub favorite.',
+    badge: 'Classic',
+    price: 'Ask in store',
     image: '/images/wings-closeup.jpeg',
-  },
-  {
-    title: '100 pc. Party Pack',
-    description: 'Feed the whole crew. Choose up to 4 sauces or rubs.',
-    badge: 'Game Day',
-    price: '$89.99',
-    image: '/images/party-pack.png',
-  },
-  {
-    title: 'Pizza Cones',
-    description: 'A Wing Shack original — pizza in a crispy waffle cone. Kids love it!',
-    badge: 'Unique',
-    price: 'From $5.99',
-    image: '/images/pizza-cone.jpg',
-  },
-  {
-    title: 'Meal Deals',
-    description: 'Wings + fries, celery, dressing & a drink. The full experience.',
-    badge: 'Best Value',
-    price: 'From $12.99',
-    image: '/images/wings-platter.jpeg',
-  },
-  {
-    title: 'Boulders',
-    description: 'Jumbo-sized bone-in wings for the serious wing lover.',
-    badge: 'Go Big',
-    price: 'From $10.99',
-    image: '/images/restaurant-interior.jpg',
   },
 ]
 
@@ -54,7 +54,7 @@ export default function FeaturedMenu() {
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           title="Fan Favorites"
-          subtitle="Start here. These are the dishes our regulars can't live without."
+          subtitle="Start here. These are the menu items our regulars can't live without."
         />
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

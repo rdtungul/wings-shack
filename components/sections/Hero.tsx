@@ -20,6 +20,15 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <div className="flex justify-center mb-6">
+          <Image
+            src="/images/logo.png"
+            alt="Wing Shack"
+            width={200}
+            height={200}
+            className="object-contain"
+          />
+        </div>
         <p className="text-brand-orange font-bold uppercase tracking-widest text-sm mb-4">
           South Carolina&apos;s Favorite Since 1987
         </p>
@@ -35,7 +44,7 @@ export default function Hero() {
           <Button href="/menu" variant="primary" className="text-base px-8 py-4">
             See Our Menu
           </Button>
-          <Button href="/contact-us" variant="outline" className="text-base px-8 py-4 border-white text-white hover:bg-white hover:text-brand-black">
+          <Button href="/contact-us" variant="outline" className="text-base px-8 py-4 border-white text-white">
             Find a Location
           </Button>
         </div>

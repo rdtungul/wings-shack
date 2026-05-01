@@ -22,6 +22,12 @@ type FormState = {
   city: string
   state: string
   zip: string
+  birthdate: string
+  lastEmployer: string
+  lastJobTitle: string
+  lastJobFrom: string
+  lastJobTo: string
+  lastJobReason: string
   hearAbout: string
   additionalInfo: string
 }
@@ -29,6 +35,8 @@ type FormState = {
 const initialForm: FormState = {
   firstName: '', lastName: '', email: '', phone: '',
   address: '', city: '', state: '', zip: '',
+  birthdate: '',
+  lastEmployer: '', lastJobTitle: '', lastJobFrom: '', lastJobTo: '', lastJobReason: '',
   hearAbout: '', additionalInfo: '',
 }
 
@@ -123,6 +131,41 @@ export default function CareersPage() {
                   <label htmlFor="zip" className={labelCls}>ZIP</label>
                   <input id="zip" name="zip" type="text" value={form.zip} onChange={handleChange} placeholder="29033" maxLength={10} className={inputCls} />
                 </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="birthdate" className={labelCls}>Date of Birth <span className="text-brand-red">*</span></label>
+                  <input id="birthdate" name="birthdate" type="date" required value={form.birthdate} onChange={handleChange} className={inputCls} />
+                </div>
+              </div>
+            </div>
+
+            {/* Last Job */}
+            <h2 className={sectionHeadCls}>Last Job</h2>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="lastEmployer" className={labelCls}>Employer</label>
+                  <input id="lastEmployer" name="lastEmployer" type="text" value={form.lastEmployer} onChange={handleChange} placeholder="Company Name" className={inputCls} />
+                </div>
+                <div>
+                  <label htmlFor="lastJobTitle" className={labelCls}>Job Title</label>
+                  <input id="lastJobTitle" name="lastJobTitle" type="text" value={form.lastJobTitle} onChange={handleChange} placeholder="e.g. Cook, Cashier" className={inputCls} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="lastJobFrom" className={labelCls}>From</label>
+                  <input id="lastJobFrom" name="lastJobFrom" type="month" value={form.lastJobFrom} onChange={handleChange} className={inputCls} />
+                </div>
+                <div>
+                  <label htmlFor="lastJobTo" className={labelCls}>To</label>
+                  <input id="lastJobTo" name="lastJobTo" type="month" value={form.lastJobTo} onChange={handleChange} className={inputCls} />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="lastJobReason" className={labelCls}>Reason for Leaving</label>
+                <input id="lastJobReason" name="lastJobReason" type="text" value={form.lastJobReason} onChange={handleChange} placeholder="e.g. Seeking new opportunities" className={inputCls} />
               </div>
             </div>
 

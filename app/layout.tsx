@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Inter, Bebas_Neue } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -10,8 +9,9 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-const rolleteQaku = localFont({
-  src: '../public/fonts/RolleteQaku-Regular.woff',
+const bebas = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
   variable: '--font-bebas',
 })
 
@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${rolleteQaku.variable}`}>
+    <html lang="en" className={`${inter.variable} ${bebas.variable}`}>
       <body className="bg-brand-offwhite font-sans text-brand-black flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1">{children}</main>

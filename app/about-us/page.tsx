@@ -165,48 +165,9 @@ export default function AboutPage() {
             Wing Shack is always looking for passionate people to join our growing team.
             Whether you&apos;re in the kitchen or front-of-house, we&apos;d love to have you.
           </p>
-          <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-left">
-            <h3 className="font-bold text-white text-xl mb-6">Apply Now</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brand-red"
-                />
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brand-red"
-                />
-              </div>
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brand-red"
-              />
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brand-red"
-              />
-              <select className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/70 focus:outline-none focus:border-brand-red">
-                <option value="">Preferred Location</option>
-                <option value="cayce">Cayce, SC</option>
-                <option value="lancaster">Lancaster, SC</option>
-                <option value="garners-ferry">Garners Ferry, SC</option>
-                <option value="winnsboro">Winnsboro, SC</option>
-              </select>
-              <textarea
-                rows={4}
-                placeholder="Tell us a little about yourself..."
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-brand-red resize-none"
-              />
-              <Button variant="primary" type="submit" className="w-full py-4">
-                Submit Application
-              </Button>
-            </form>
-          </div>
+          <Button href="/careers" variant="primary" className="py-4 px-10 text-base">
+            Apply Now
+          </Button>
         </div>
       </section>
     </div>

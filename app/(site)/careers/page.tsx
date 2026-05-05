@@ -47,14 +47,30 @@ const sectionHeadCls = 'font-display text-2xl uppercase tracking-wide text-brand
 export default function CareersPage() {
   const [form, setForm] = useState<FormState>(initialForm)
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/careers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error('Failed to send')
+      setSubmitted(true)
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -83,7 +99,7 @@ export default function CareersPage() {
             </p>
             <Button
               variant="outline"
-              onClick={() => { setSubmitted(false); setForm(initialForm) }}
+              onClick={() => { setSubmitted(false); setForm(initialForm); setError(null) }}
             >
               Submit Another Application
             </Button>
@@ -194,8 +210,11 @@ export default function CareersPage() {
             </div>
 
             <div className="pt-8">
-              <Button type="submit" variant="primary" className="w-full py-4 text-base">
-                Submit Application
+              {error && (
+                <p className="text-sm text-red-600 mb-3">{error}</p>
+              )}
+              <Button type="submit" variant="primary" className="w-full py-4 text-base" disabled={loading}>
+                {loading ? 'Submitting…' : 'Submit Application'}
               </Button>
               <p className="text-xs text-brand-gray text-center mt-4">
                 Fields marked <span className="text-brand-red">*</span> are required.

@@ -8,14 +8,30 @@ import Button from '@/components/ui/Button'
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error('Failed to send')
+      setSubmitted(true)
+    } catch {
+      setError('Something went wrong. Please try again or email us directly.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -49,7 +65,7 @@ export default function ContactPage() {
                 <Button
                   variant="outline"
                   className="mt-6"
-                  onClick={() => { setSubmitted(false); setForm({ name: '', email: '', subject: '', message: '' }) }}
+                  onClick={() => { setSubmitted(false); setForm({ name: '', email: '', subject: '', message: '' }); setError(null) }}
                 >
                   Send Another
                 </Button>
@@ -120,8 +136,11 @@ export default function ContactPage() {
                     className="w-full border border-brand-lightgray rounded-xl px-4 py-3 text-brand-black placeholder-brand-gray focus:outline-none focus:border-brand-red bg-white resize-none"
                   />
                 </div>
-                <Button type="submit" variant="primary" className="w-full py-4 text-base">
-                  Send Message
+                {error && (
+                  <p className="text-sm text-red-600">{error}</p>
+                )}
+                <Button type="submit" variant="primary" className="w-full py-4 text-base" disabled={loading}>
+                  {loading ? 'Sending…' : 'Send Message'}
                 </Button>
               </form>
             )}

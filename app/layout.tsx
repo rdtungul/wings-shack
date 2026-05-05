@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Bebas_Neue } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,17 +33,11 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${bebas.variable}`}>
-      <body className="bg-brand-offwhite font-sans text-brand-black flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+      <body className="bg-brand-offwhite font-sans text-brand-black">
+        {children}
       </body>
     </html>
   )

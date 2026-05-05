@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wingshack
+      POSTGRES_USER: wingshack
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wingshack"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://wingshack:${POSTGRES_PASSWORD:-changeme}@db:5432/wingshack
+      JWT_SECRET: ${JWT_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
+      RESEND_TO_EMAIL: ${RESEND_TO_EMAIL}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrate:
+    build: .
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed"
+    environment:
+      DATABASE_URL: postgresql://wingshack:${POSTGRES_PASSWORD:-changeme}@db:5432/wingshack
+      SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME:-americanpavingncAdmin}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-americanpavingncAdminPassword}
+      SEED_ADMIN_NAME: ${SEED_ADMIN_NAME:-Master Admin}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

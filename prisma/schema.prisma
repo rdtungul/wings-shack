@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MASTERADMIN
+  CLERK
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String?
+  password  String
+  name      String
+  role      Role     @default(CLERK)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model CareerApplication {
+  id             String   @id @default(cuid())
+  firstName      String
+  lastName       String
+  email          String
+  phone          String
+  address        String?
+  city           String?
+  state          String?
+  zip            String?
+  birthdate      String
+  lastEmployer   String?
+  lastJobTitle   String?
+  lastJobFrom    String?
+  lastJobTo      String?
+  lastJobReason  String?
+  hearAbout      String?
+  additionalInfo String?
+  createdAt      DateTime @default(now())
+}

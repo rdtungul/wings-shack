@@ -40,9 +40,12 @@ export async function POST(req: NextRequest) {
       password,
       firstName,
       lastName,
+      skipPasswordChecks: true,
     })
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Failed to create user'
+    console.error('Clerk createUser error:', JSON.stringify(err, null, 2))
+    const clerkErr = err as { errors?: Array<{ message: string; longMessage?: string }> }
+    const msg = clerkErr.errors?.[0]?.longMessage ?? clerkErr.errors?.[0]?.message ?? (err instanceof Error ? err.message : 'Failed to create user')
     return Response.json({ error: msg }, { status: 400 })
   }
 

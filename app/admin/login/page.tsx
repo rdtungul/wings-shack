@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { SignIn, useSignIn } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 
 const inputCls =
   'w-full border border-brand-lightgray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red bg-white text-brand-black'
@@ -10,8 +9,7 @@ const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-g
 
 function ManualLoginForm({ onBack }: { onBack: () => void }) {
   const { signIn } = useSignIn()
-  const router = useRouter()
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -22,18 +20,18 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
     setError(null)
     try {
       // Step 1: set identifier
-      const { error: createErr } = await signIn.create({ identifier: email })
+      const { error: createErr } = await signIn.create({ identifier })
       if (createErr) { setError(createErr.message ?? 'Invalid identifier'); return }
 
       // Step 2: submit password
       const { error: pwErr } = await signIn.password({ password })
       if (pwErr) { setError(pwErr.message ?? 'Invalid credentials'); return }
 
-      // Step 3: activate session
+      // Step 3: activate session then hard-redirect so middleware picks up the new cookie
       const { error: finalErr } = await signIn.finalize()
       if (finalErr) { setError(finalErr.message ?? 'Sign-in failed'); return }
 
-      router.push('/admin')
+      window.location.href = '/admin'
     } catch (err: unknown) {
       const clerkErr = err as { errors?: Array<{ message: string }> }
       setError(clerkErr.errors?.[0]?.message ?? 'Login failed')
@@ -50,8 +48,8 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
           type="text"
           required
           autoComplete="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
           placeholder="admin@wingshack.com or username"
           className={inputCls}
         />

@@ -22,10 +22,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
+    if (pathname === '/admin/login') return
     fetch('/api/admin/auth/me')
       .then((r) => (r.ok ? r.json() : null))
       .then(setUser)
-  }, [])
+  }, [pathname])
 
   // Don't render shell on login page
   if (pathname === '/admin/login') return <>{children}</>

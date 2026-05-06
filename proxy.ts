@@ -8,5 +8,5 @@ export const proxy = clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*'],
 }

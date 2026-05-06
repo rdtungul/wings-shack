@@ -9,7 +9,7 @@ const inputCls =
 const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-gray mb-1.5'
 
 function ManualLoginForm({ onBack }: { onBack: () => void }) {
-  const { signIn, isLoaded, setActive } = useSignIn()
+  const { signIn } = useSignIn()
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,17 +18,22 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!isLoaded) return
     setLoading(true)
     setError(null)
     try {
-      const result = await signIn.create({ identifier: email, password })
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId })
-        router.push('/admin')
-      } else {
-        setError('Sign-in incomplete. Please try again.')
-      }
+      // Step 1: set identifier
+      const { error: createErr } = await signIn.create({ identifier: email })
+      if (createErr) { setError(createErr.message ?? 'Invalid identifier'); return }
+
+      // Step 2: submit password
+      const { error: pwErr } = await signIn.password({ password })
+      if (pwErr) { setError(pwErr.message ?? 'Invalid credentials'); return }
+
+      // Step 3: activate session
+      const { error: finalErr } = await signIn.finalize()
+      if (finalErr) { setError(finalErr.message ?? 'Sign-in failed'); return }
+
+      router.push('/admin')
     } catch (err: unknown) {
       const clerkErr = err as { errors?: Array<{ message: string }> }
       setError(clerkErr.errors?.[0]?.message ?? 'Login failed')
@@ -40,14 +45,14 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 space-y-4 shadow-2xl">
       <div>
-        <label className={labelCls}>Email</label>
+        <label className={labelCls}>Email or Username</label>
         <input
-          type="email"
+          type="text"
           required
-          autoComplete="email"
+          autoComplete="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="admin@wingshack.com"
+          placeholder="admin@wingshack.com or username"
           className={inputCls}
         />
       </div>

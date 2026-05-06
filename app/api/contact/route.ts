@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL!,
     to: process.env.RESEND_TO_EMAIL!,
-    reply_to: email,
+    replyTo: email,
     subject: `[Wing Shack Contact] ${subjectLabel}`,
     text: [
       `Name: ${name}`,

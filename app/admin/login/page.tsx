@@ -20,8 +20,15 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
     setLoading(true)
     setError(null)
     try {
+      // Resolve username → email (Clerk needs email if username sign-in isn't enabled)
+      const resolved = await fetch('/api/admin/auth/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier }),
+      }).then((r) => r.json()).then((d) => d.identifier as string).catch(() => identifier)
+
       // Step 1: set identifier
-      const { error: createErr } = await signIn.create({ identifier })
+      const { error: createErr } = await signIn.create({ identifier: resolved })
       if (createErr) { setError(createErr.message ?? 'Invalid identifier'); return }
 
       // Step 2: submit password

@@ -100,8 +100,8 @@ export default function ManageClerksPage() {
           </div>
 
           <div>
-            <label className={labelCls}>Email</label>
-            <input name="email" type="email" required value={form.email} onChange={handleChange} placeholder="jane@wingshack.com" className={inputCls} />
+            <label className={labelCls}>Email <span className="normal-case font-normal text-brand-gray">(optional)</span></label>
+            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="jane@wingshack.com" className={inputCls} />
           </div>
 
           <div>

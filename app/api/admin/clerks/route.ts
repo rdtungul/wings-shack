@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   const { firstName, lastName, username, email, password } = await req.json()
 
-  if (!firstName || !lastName || !username || !email || !password) {
+  if (!firstName || !lastName || !username || !password) {
     return Response.json({ error: 'All fields are required' }, { status: 400 })
   }
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   let clerkUser
   try {
     clerkUser = await client.users.createUser({
-      emailAddress: [email],
+      ...(email ? { emailAddress: [email] } : {}),
       username,
       password,
       firstName,
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     data: {
       clerkId: clerkUser.id,
       name: `${firstName} ${lastName}`,
-      email,
+      email: email || null,
       role: 'CLERK',
       allowedLocations: [],
     },

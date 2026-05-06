@@ -8,17 +8,20 @@ export async function POST(req: NextRequest) {
   const data = await req.json()
 
   const {
+    location,
     firstName, lastName, email, phone,
     address, city, state, zip, birthdate,
     lastEmployer, lastJobTitle, lastJobFrom, lastJobTo, lastJobReason,
     hearAbout, additionalInfo,
   } = data
 
-  if (!firstName || !lastName || !email || !phone || !birthdate) {
+  if (!firstName || !lastName || !email || !phone || !birthdate || !location) {
     return Response.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
   const lines = [
+    `Location Applied: ${location}`,
+    '',
     '=== PERSONAL INFORMATION ===',
     `Name:      ${firstName} ${lastName}`,
     `Email:     ${email}`,
@@ -41,21 +44,9 @@ export async function POST(req: NextRequest) {
     additionalInfo || '(no additional info)',
   ]
 
-  const { error } = await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL!,
-    to: process.env.RESEND_TO_EMAIL!,
-    replyTo: email,
-    subject: `[Wing Shack Application] ${firstName} ${lastName}`,
-    text: lines.join('\n'),
-  })
-
-  if (error) {
-    console.error('Resend error:', error)
-    return Response.json({ error: 'Failed to send application' }, { status: 500 })
-  }
-
   await prisma.careerApplication.create({
     data: {
+      location,
       firstName, lastName, email, phone, birthdate,
       address: address || null,
       city: city || null,
@@ -70,6 +61,18 @@ export async function POST(req: NextRequest) {
       additionalInfo: additionalInfo || null,
     },
   })
+
+  const { error } = await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL!,
+    to: process.env.RESEND_TO_EMAIL!,
+    reply_to: email,
+    subject: `[Wing Shack Application] ${firstName} ${lastName}`,
+    text: lines.join('\n'),
+  })
+
+  if (error) {
+    console.error('Resend error (careers):', error)
+  }
 
   return Response.json({ ok: true })
 }

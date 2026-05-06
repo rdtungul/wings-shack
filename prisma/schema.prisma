@@ -13,14 +13,14 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  email     String?
-  password  String
-  name      String
-  role      Role     @default(CLERK)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  clerkId          String   @unique
+  name             String
+  email            String?
+  role             Role     @default(CLERK)
+  allowedLocations String[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model ContactSubmission {
@@ -48,6 +48,7 @@ model CareerApplication {
   lastJobFrom    String?
   lastJobTo      String?
   lastJobReason  String?
+  location       String?
   hearAbout      String?
   additionalInfo String?
   createdAt      DateTime @default(now())

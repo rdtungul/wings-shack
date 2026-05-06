@@ -2,14 +2,27 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { locations } from '@/data/locations'
 
-type Clerk = { id: string; username: string; email: string | null; name: string; createdAt: string }
+type AdminClerk = {
+  id: string
+  clerkId: string
+  email: string | null
+  name: string
+  allowedLocations: string[]
+  createdAt: string
+}
 
-const emptyForm = { firstName: '', lastName: '', username: '', email: '', password: '', confirmPassword: '' }
+const locationNames = locations.map((l) => l.name)
+
+const emptyForm = {
+  firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
+  allowedLocations: [] as string[],
+}
 
 export default function ManageClerksPage() {
   const router = useRouter()
-  const [clerks, setClerks] = useState<Clerk[]>([])
+  const [clerks, setClerks] = useState<AdminClerk[]>([])
   const [form, setForm] = useState(emptyForm)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -27,6 +40,15 @@ export default function ManageClerksPage() {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }))
   }
 
+  function toggleLocation(name: string) {
+    setForm((p) => ({
+      ...p,
+      allowedLocations: p.allowedLocations.includes(name)
+        ? p.allowedLocations.filter((l) => l !== name)
+        : [...p.allowedLocations, name],
+    }))
+  }
+
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     if (form.password !== form.confirmPassword) {
@@ -41,10 +63,11 @@ export default function ManageClerksPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: `${form.firstName.trim()} ${form.lastName.trim()}`,
-          username: form.username,
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
           email: form.email,
           password: form.password,
+          allowedLocations: form.allowedLocations,
         }),
       })
       const data = await res.json()
@@ -65,6 +88,21 @@ export default function ManageClerksPage() {
     if (res.ok) fetchClerks()
   }
 
+  async function handleUpdateLocations(id: string, current: string[], toggle: string) {
+    const updated = current.includes(toggle)
+      ? current.filter((l) => l !== toggle)
+      : [...current, toggle]
+    const res = await fetch(`/api/admin/clerks/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ allowedLocations: updated }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setClerks((prev) => prev.map((c) => c.id === id ? { ...c, allowedLocations: data.allowedLocations } : c))
+    }
+  }
+
   const inputCls = 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red'
   const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-gray mb-1'
 
@@ -79,90 +117,55 @@ export default function ManageClerksPage() {
         <h2 className="font-bold text-lg text-brand-black mb-4">Add New Clerk</h2>
         <form onSubmit={handleAdd} className="space-y-4">
 
-          {/* Name row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>First Name</label>
-              <input
-                name="firstName"
-                type="text"
-                required
-                value={form.firstName}
-                onChange={handleChange}
-                placeholder="Jane"
-                className={inputCls}
-              />
+              <input name="firstName" type="text" required value={form.firstName} onChange={handleChange} placeholder="Jane" className={inputCls} />
             </div>
             <div>
               <label className={labelCls}>Last Name</label>
-              <input
-                name="lastName"
-                type="text"
-                required
-                value={form.lastName}
-                onChange={handleChange}
-                placeholder="Smith"
-                className={inputCls}
-              />
+              <input name="lastName" type="text" required value={form.lastName} onChange={handleChange} placeholder="Smith" className={inputCls} />
             </div>
           </div>
 
-          {/* Username + Email row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className={labelCls}>Username</label>
-              <input
-                name="username"
-                type="text"
-                required
-                value={form.username}
-                onChange={handleChange}
-                placeholder="janeclerk"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className={labelCls}>Email</label>
-              <input
-                name="email"
-                type="email"
-                required
-                value={form.email}
-                onChange={handleChange}
-                placeholder="jane@wingshack.com"
-                className={inputCls}
-              />
-            </div>
+          <div>
+            <label className={labelCls}>Email</label>
+            <input name="email" type="email" required value={form.email} onChange={handleChange} placeholder="jane@wingshack.com" className={inputCls} />
           </div>
 
-          {/* Password row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Password</label>
-              <input
-                name="password"
-                type="password"
-                required
-                minLength={8}
-                value={form.password}
-                onChange={handleChange}
-                placeholder="Min 8 characters"
-                className={inputCls}
-              />
+              <input name="password" type="password" required minLength={8} value={form.password} onChange={handleChange} placeholder="Min 8 characters" className={inputCls} />
             </div>
             <div>
               <label className={labelCls}>Confirm Password</label>
-              <input
-                name="confirmPassword"
-                type="password"
-                required
-                minLength={8}
-                value={form.confirmPassword}
-                onChange={handleChange}
-                placeholder="Re-enter password"
-                className={inputCls}
-              />
+              <input name="confirmPassword" type="password" required minLength={8} value={form.confirmPassword} onChange={handleChange} placeholder="Re-enter password" className={inputCls} />
             </div>
+          </div>
+
+          {/* Location permissions */}
+          <div>
+            <label className={labelCls}>Allowed Locations</label>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {locationNames.map((loc) => (
+                <button
+                  key={loc}
+                  type="button"
+                  onClick={() => toggleLocation(loc)}
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors cursor-pointer ${
+                    form.allowedLocations.includes(loc)
+                      ? 'bg-brand-red text-white border-brand-red'
+                      : 'bg-white text-brand-gray border-gray-300 hover:border-brand-red'
+                  }`}
+                >
+                  {loc}
+                </button>
+              ))}
+            </div>
+            {form.allowedLocations.length === 0 && (
+              <p className="text-xs text-brand-gray mt-1">No locations selected — clerk won&apos;t see any applications.</p>
+            )}
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -188,17 +191,35 @@ export default function ManageClerksPage() {
         ) : (
           <ul className="divide-y divide-gray-100">
             {clerks.map((c) => (
-              <li key={c.id} className="flex items-center justify-between px-6 py-4">
-                <div>
-                  <p className="font-semibold text-brand-black text-sm">{c.name}</p>
-                  <p className="text-xs text-brand-gray">@{c.username}{c.email ? ` · ${c.email}` : ''}</p>
+              <li key={c.id} className="px-6 py-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-brand-black text-sm">{c.name}</p>
+                    {c.email && <p className="text-xs text-brand-gray">{c.email}</p>}
+                    {/* Location toggles */}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {locationNames.map((loc) => (
+                        <button
+                          key={loc}
+                          onClick={() => handleUpdateLocations(c.id, c.allowedLocations, loc)}
+                          className={`text-xs font-semibold px-2.5 py-1 rounded-full border transition-colors cursor-pointer ${
+                            c.allowedLocations.includes(loc)
+                              ? 'bg-brand-red text-white border-brand-red'
+                              : 'bg-white text-brand-gray border-gray-300 hover:border-brand-red'
+                          }`}
+                        >
+                          {loc}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(c.id, c.name)}
+                    className="text-xs font-bold uppercase tracking-wide text-red-500 hover:text-red-700 transition-colors cursor-pointer shrink-0"
+                  >
+                    Remove
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDelete(c.id, c.name)}
-                  className="text-xs font-bold uppercase tracking-wide text-red-500 hover:text-red-700 transition-colors cursor-pointer"
-                >
-                  Remove
-                </button>
               </li>
             ))}
           </ul>

@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { useClerk } from '@clerk/nextjs'
 import { clsx } from 'clsx'
 
-type Session = { id: string; username: string; name: string; role: 'MASTERADMIN' | 'CLERK' }
+type AdminUser = { id: string; clerkId: string; name: string; role: 'MASTERADMIN' | 'CLERK'; allowedLocations: string[] }
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', roles: ['MASTERADMIN', 'CLERK'] },
@@ -16,25 +17,20 @@ const navLinks = [
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const router = useRouter()
-  const [session, setSession] = useState<Session | null>(null)
+  const { signOut } = useClerk()
+  const [user, setUser] = useState<AdminUser | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     fetch('/api/admin/auth/me')
       .then((r) => (r.ok ? r.json() : null))
-      .then(setSession)
+      .then(setUser)
   }, [])
-
-  async function logout() {
-    await fetch('/api/admin/auth/logout', { method: 'POST' })
-    router.push('/admin/login')
-  }
 
   // Don't render shell on login page
   if (pathname === '/admin/login') return <>{children}</>
 
-  const links = session ? navLinks.filter((l) => l.roles.includes(session.role)) : []
+  const links = user ? navLinks.filter((l) => l.roles.includes(user.role)) : []
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -74,23 +70,6 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             </Link>
           ))}
         </nav>
-
-        {/* User + Logout */}
-        <div className="px-6 py-5 border-t border-white/10">
-          {session && (
-            <p className="text-xs text-white/50 mb-3 truncate">
-              <span className="text-white/80 font-semibold">{session.name}</span>
-              <br />
-              {session.role === 'MASTERADMIN' ? 'Master Admin' : 'Clerk'}
-            </p>
-          )}
-          <button
-            onClick={logout}
-            className="w-full text-sm font-bold uppercase tracking-wide text-white/60 hover:text-white transition-colors text-left cursor-pointer"
-          >
-            Sign Out
-          </button>
-        </div>
       </aside>
 
       {/* Overlay for mobile */}
@@ -113,7 +92,20 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <span className="block w-5 h-0.5 bg-current mb-1" />
             <span className="block w-5 h-0.5 bg-current" />
           </button>
-          {session && <span className="text-sm text-brand-gray">{session.name}</span>}
+          {user && (
+            <div className="flex items-center gap-2.5">
+              <span className="text-sm font-semibold text-brand-black">{user.name}</span>
+              <span className="text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-brand-red text-white">
+                {user.role === 'MASTERADMIN' ? 'Master Admin' : 'Clerk'}
+              </span>
+              <button
+                onClick={() => signOut({ redirectUrl: '/admin/login' })}
+                className="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-gray-300 text-brand-gray hover:bg-brand-black hover:border-brand-black hover:text-white transition-colors cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>

@@ -9,6 +9,9 @@ export default async function CareerApplicationsPage() {
   if (!session) redirect('/admin/login')
 
   const applications = await prisma.careerApplication.findMany({
+    where: session.role === 'MASTERADMIN'
+      ? {}
+      : { location: { in: session.allowedLocations } },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -17,6 +20,12 @@ export default async function CareerApplicationsPage() {
       <h1 className="font-display text-4xl uppercase tracking-wide text-brand-black mb-6">
         Career Applications
       </h1>
+
+      {session.role === 'CLERK' && session.allowedLocations.length > 0 && (
+        <p className="text-sm text-brand-gray mb-6">
+          Showing applications for: <span className="font-semibold text-brand-black">{session.allowedLocations.join(', ')}</span>
+        </p>
+      )}
 
       {applications.length === 0 ? (
         <p className="text-brand-gray">No applications yet.</p>
@@ -34,9 +43,16 @@ export default async function CareerApplicationsPage() {
                   </a>
                   {a.phone && <p className="text-sm text-brand-gray">{a.phone}</p>}
                 </div>
-                <p className="text-xs text-brand-gray">
-                  {new Date(a.createdAt).toLocaleString()}
-                </p>
+                <div className="text-right">
+                  {a.location && (
+                    <span className="inline-block text-xs font-bold uppercase tracking-wide bg-brand-black text-white px-3 py-1 rounded-full mb-1">
+                      {a.location}
+                    </span>
+                  )}
+                  <p className="text-xs text-brand-gray">
+                    {new Date(a.createdAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm border-t border-gray-100 pt-4">

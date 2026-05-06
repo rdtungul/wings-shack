@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import { CheckCircle } from 'lucide-react'
+import { locations } from '@/data/locations'
 
 const hearAboutOptions = [
   'Indeed',
@@ -14,6 +15,7 @@ const hearAboutOptions = [
 ]
 
 type FormState = {
+  location: string
   firstName: string
   lastName: string
   email: string
@@ -33,6 +35,7 @@ type FormState = {
 }
 
 const initialForm: FormState = {
+  location: '',
   firstName: '', lastName: '', email: '', phone: '',
   address: '', city: '', state: '', zip: '',
   birthdate: '',
@@ -107,8 +110,22 @@ export default function CareersPage() {
         ) : (
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-brand-lightgray p-8 md:p-12 space-y-0">
 
+            {/* Location */}
+            <h2 className={sectionHeadCls} style={{ marginTop: 0 }}>Which Location Are You Applying To?</h2>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="location" className={labelCls}>Location <span className="text-brand-red">*</span></label>
+                <select id="location" name="location" required value={form.location} onChange={handleChange} className={inputCls}>
+                  <option value="">Select a location</option>
+                  {locations.map((l) => (
+                    <option key={l.name} value={l.name}>{l.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             {/* Personal Information */}
-            <h2 className={sectionHeadCls} style={{ marginTop: 0 }}>Personal Information</h2>
+            <h2 className={sectionHeadCls}>Personal Information</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

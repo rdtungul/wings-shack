@@ -21,10 +21,14 @@ export async function POST(req: NextRequest) {
 
   const subjectLabel = subjectLabels[subject] ?? subject ?? 'Contact Form'
 
+  await prisma.contactSubmission.create({
+    data: { name, email, subject: subject ?? null, message },
+  })
+
   const { error } = await resend.emails.send({
     from: process.env.RESEND_FROM_EMAIL!,
     to: process.env.RESEND_TO_EMAIL!,
-    replyTo: email,
+    reply_to: email,
     subject: `[Wing Shack Contact] ${subjectLabel}`,
     text: [
       `Name: ${name}`,
@@ -36,13 +40,8 @@ export async function POST(req: NextRequest) {
   })
 
   if (error) {
-    console.error('Resend error:', error)
-    return Response.json({ error: 'Failed to send message' }, { status: 500 })
+    console.error('Resend error (contact):', error)
   }
-
-  await prisma.contactSubmission.create({
-    data: { name, email, subject: subject ?? null, message },
-  })
 
   return Response.json({ ok: true })
 }

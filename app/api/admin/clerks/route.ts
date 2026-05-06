@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import bcrypt from 'bcryptjs'
+import { clerkClient } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 
@@ -11,7 +11,7 @@ export async function GET() {
 
   const clerks = await prisma.user.findMany({
     where: { role: 'CLERK' },
-    select: { id: true, username: true, email: true, name: true, createdAt: true },
+    select: { id: true, clerkId: true, email: true, name: true, allowedLocations: true, createdAt: true },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -24,21 +24,36 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { username, email, name, password } = await req.json()
+  const { firstName, lastName, email, password, allowedLocations } = await req.json()
 
-  if (!username || !email || !name || !password) {
+  if (!firstName || !lastName || !email || !password) {
     return Response.json({ error: 'All fields are required' }, { status: 400 })
   }
 
-  const existing = await prisma.user.findUnique({ where: { username } })
-  if (existing) {
-    return Response.json({ error: 'Username already in use' }, { status: 409 })
+  const client = await clerkClient()
+
+  let clerkUser
+  try {
+    clerkUser = await client.users.createUser({
+      emailAddress: [email],
+      password,
+      firstName,
+      lastName,
+    })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Failed to create user'
+    return Response.json({ error: msg }, { status: 400 })
   }
 
-  const hashed = await bcrypt.hash(password, 12)
   const clerk = await prisma.user.create({
-    data: { username, email, name, password: hashed, role: 'CLERK' },
-    select: { id: true, username: true, email: true, name: true, createdAt: true },
+    data: {
+      clerkId: clerkUser.id,
+      name: `${firstName} ${lastName}`,
+      email,
+      role: 'CLERK',
+      allowedLocations: allowedLocations ?? [],
+    },
+    select: { id: true, clerkId: true, email: true, name: true, allowedLocations: true, createdAt: true },
   })
 
   return Response.json(clerk, { status: 201 })

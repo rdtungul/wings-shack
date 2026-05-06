@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { SignIn, useSignIn } from '@clerk/nextjs'
+import { SignIn, useSignIn, useClerk } from '@clerk/nextjs'
 
 const inputCls =
   'w-full border border-brand-lightgray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red bg-white text-brand-black'
@@ -9,6 +9,7 @@ const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-g
 
 function ManualLoginForm({ onBack }: { onBack: () => void }) {
   const { signIn } = useSignIn()
+  const { setActive } = useClerk()
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -27,9 +28,14 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
       const { error: pwErr } = await signIn.password({ password })
       if (pwErr) { setError(pwErr.message ?? 'Invalid credentials'); return }
 
-      // Step 3: activate session then hard-redirect so middleware picks up the new cookie
+      // Step 3: finalize sign-in
       const { error: finalErr } = await signIn.finalize()
       if (finalErr) { setError(finalErr.message ?? 'Sign-in failed'); return }
+
+      // Step 4: explicitly activate the session so the cookie is set before redirect
+      if (signIn.createdSessionId) {
+        await setActive({ session: signIn.createdSessionId })
+      }
 
       window.location.href = '/admin'
     } catch (err: unknown) {

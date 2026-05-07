@@ -139,7 +139,7 @@ export default function ContactPage() {
                 {error && (
                   <p className="text-sm text-red-600">{error}</p>
                 )}
-                <Button type="submit" variant="primary" className="w-full py-4 text-base" disabled={loading}>
+                <Button type="submit" variant="primary" className="w-full py-4 text-base" loading={loading}>
                   {loading ? 'Sending…' : 'Send Message'}
                 </Button>
               </form>

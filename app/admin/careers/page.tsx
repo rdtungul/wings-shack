@@ -1,19 +1,71 @@
-import { getSession } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
-import { redirect } from 'next/navigation'
+'use client'
 
-export const metadata = { title: 'Career Applications' }
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default async function CareerApplicationsPage() {
-  const session = await getSession()
-  if (!session) redirect('/admin/login')
+type Session = { role: 'MASTERADMIN' | 'CLERK'; allowedLocations: string[] }
+type CareerApplication = {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  city: string | null
+  state: string | null
+  zip: string | null
+  birthdate: string
+  lastEmployer: string | null
+  lastJobTitle: string | null
+  lastJobFrom: string | null
+  lastJobTo: string | null
+  lastJobReason: string | null
+  location: string | null
+  hearAbout: string | null
+  additionalInfo: string | null
+  archived: boolean
+  createdAt: string
+}
 
-  const applications = await prisma.careerApplication.findMany({
-    where: session.role === 'MASTERADMIN'
-      ? {}
-      : { location: { in: session.allowedLocations } },
-    orderBy: { createdAt: 'desc' },
-  })
+export default function CareerApplicationsPage() {
+  const router = useRouter()
+  const [session, setSession] = useState<Session | null>(null)
+  const [tab, setTab] = useState<'active' | 'archived'>('active')
+  const [applications, setApplications] = useState<CareerApplication[]>([])
+  const [loading, setLoading] = useState(true)
+  const [busy, setBusy] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/auth/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((u) => { if (!u) router.push('/admin/login'); else setSession(u) })
+  }, [router])
+
+  useEffect(() => {
+    if (!session) return
+    setLoading(true)
+    fetch(`/api/admin/submissions/careers?archived=${tab === 'archived'}`)
+      .then((r) => r.json())
+      .then((data) => { setApplications(data); setLoading(false) })
+  }, [session, tab])
+
+  async function handleArchive(id: string, archive: boolean) {
+    setBusy(id)
+    await fetch(`/api/admin/submissions/careers/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: archive }),
+    })
+    setApplications((prev) => prev.filter((a) => a.id !== id))
+    setBusy(null)
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('Permanently delete this application? This cannot be undone.')) return
+    setBusy(id)
+    await fetch(`/api/admin/submissions/careers/${id}`, { method: 'DELETE' })
+    setApplications((prev) => prev.filter((a) => a.id !== id))
+    setBusy(null)
+  }
 
   return (
     <div>
@@ -21,14 +73,35 @@ export default async function CareerApplicationsPage() {
         Career Applications
       </h1>
 
-      {session.role === 'CLERK' && session.allowedLocations.length > 0 && (
-        <p className="text-sm text-brand-gray mb-6">
-          Showing applications for: <span className="font-semibold text-brand-black">{session.allowedLocations.join(', ')}</span>
+      {session?.role === 'CLERK' && session.allowedLocations.length > 0 && (
+        <p className="text-sm text-brand-gray mb-4">
+          Showing applications for:{' '}
+          <span className="font-semibold text-brand-black">{session.allowedLocations.join(', ')}</span>
         </p>
       )}
 
-      {applications.length === 0 ? (
-        <p className="text-brand-gray">No applications yet.</p>
+      {session?.role === 'MASTERADMIN' && (
+        <div className="flex gap-2 mb-6">
+          {(['active', 'archived'] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide transition-colors cursor-pointer ${
+                tab === t
+                  ? 'bg-brand-black text-white'
+                  : 'bg-white text-brand-gray border border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              {t === 'active' ? 'Active' : 'Archived'}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-brand-gray">Loading…</p>
+      ) : applications.length === 0 ? (
+        <p className="text-brand-gray">No {tab} applications.</p>
       ) : (
         <div className="space-y-4">
           {applications.map((a) => (
@@ -43,15 +116,35 @@ export default async function CareerApplicationsPage() {
                   </a>
                   {a.phone && <p className="text-sm text-brand-gray">{a.phone}</p>}
                 </div>
-                <div className="text-right">
-                  {a.location && (
-                    <span className="inline-block text-xs font-bold uppercase tracking-wide bg-brand-black text-white px-3 py-1 rounded-full mb-1">
-                      {a.location}
-                    </span>
+                <div className="flex flex-wrap items-start gap-2">
+                  <div className="text-right">
+                    {a.location && (
+                      <span className="inline-block text-xs font-bold uppercase tracking-wide bg-brand-black text-white px-3 py-1 rounded-full mb-1">
+                        {a.location}
+                      </span>
+                    )}
+                    <p className="text-xs text-brand-gray">
+                      {new Date(a.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  {session?.role === 'MASTERADMIN' && (
+                    <div className="flex gap-1.5">
+                      <button
+                        disabled={busy === a.id}
+                        onClick={() => handleArchive(a.id, !a.archived)}
+                        className="text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border border-gray-300 text-brand-gray hover:bg-gray-100 transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {a.archived ? 'Unarchive' : 'Archive'}
+                      </button>
+                      <button
+                        disabled={busy === a.id}
+                        onClick={() => handleDelete(a.id)}
+                        className="text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border border-brand-red text-brand-red hover:bg-brand-red hover:text-white transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   )}
-                  <p className="text-xs text-brand-gray">
-                    {new Date(a.createdAt).toLocaleString()}
-                  </p>
                 </div>
               </div>
 

@@ -16,6 +16,7 @@ model User {
   id               String   @id @default(cuid())
   clerkId          String   @unique
   name             String
+  username         String?
   email            String?
   role             Role     @default(CLERK)
   allowedLocations String[]
@@ -29,6 +30,7 @@ model ContactSubmission {
   email     String
   subject   String?
   message   String
+  archived  Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
@@ -51,5 +53,6 @@ model CareerApplication {
   location       String?
   hearAbout      String?
   additionalInfo String?
+  archived       Boolean  @default(false)
   createdAt      DateTime @default(now())
 }

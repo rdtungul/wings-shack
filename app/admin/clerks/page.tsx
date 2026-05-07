@@ -8,11 +8,12 @@ type AdminClerk = {
   clerkId: string
   email: string | null
   name: string
+  username: string | null
   createdAt: string
 }
 
 const emptyForm = {
-  firstName: '', lastName: '', username: '', email: '', password: '', confirmPassword: '',
+  firstName: '', lastName: '', username: '', email: '', password: '',
 }
 
 export default function ManageClerksPage() {
@@ -37,10 +38,6 @@ export default function ManageClerksPage() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.')
-      return
-    }
     setLoading(true)
     setError(null)
     setSuccess(null)
@@ -74,6 +71,15 @@ export default function ManageClerksPage() {
     if (res.ok) fetchClerks()
   }
 
+  async function handleCopyLoginLink(id: string) {
+    const res = await fetch(`/api/admin/clerks/${id}/sign-in-token`, { method: 'POST' })
+    if (!res.ok) { alert('Failed to generate login link.'); return }
+    const { token } = await res.json()
+    const url = `${window.location.origin}/admin/login?token=${token}`
+    await navigator.clipboard.writeText(url)
+    alert('Login link copied to clipboard. Share it with the clerk — valid for 24 hours.')
+  }
+
   const inputCls = 'w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand-red'
   const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-gray mb-1'
 
@@ -100,8 +106,8 @@ export default function ManageClerksPage() {
           </div>
 
           <div>
-            <label className={labelCls}>Email <span className="normal-case font-normal text-brand-gray">(optional)</span></label>
-            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="jane@wingshack.com" className={inputCls} />
+            <label className={labelCls}>Email</label>
+            <input name="email" type="email" required value={form.email} onChange={handleChange} placeholder="jane@wingshack.com" className={inputCls} />
           </div>
 
           <div>
@@ -109,15 +115,9 @@ export default function ManageClerksPage() {
             <input name="username" type="text" required value={form.username} onChange={handleChange} placeholder="janeclerk" className={inputCls} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className={labelCls}>Password</label>
-              <input name="password" type="password" required minLength={8} value={form.password} onChange={handleChange} placeholder="Min 8 characters" className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Confirm Password</label>
-              <input name="confirmPassword" type="password" required minLength={8} value={form.confirmPassword} onChange={handleChange} placeholder="Re-enter password" className={inputCls} />
-            </div>
+          <div>
+            <label className={labelCls}>Password</label>
+            <input name="password" type="password" required minLength={8} value={form.password} onChange={handleChange} placeholder="Min 8 characters" className={inputCls} />
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -146,14 +146,23 @@ export default function ManageClerksPage() {
               <li key={c.id} className="flex items-center justify-between px-6 py-4">
                 <div>
                   <p className="font-semibold text-brand-black text-sm">{c.name}</p>
+                  {c.username && <p className="text-xs text-brand-gray font-mono">@{c.username}</p>}
                   {c.email && <p className="text-xs text-brand-gray">{c.email}</p>}
                 </div>
-                <button
-                  onClick={() => handleDelete(c.id, c.name)}
-                  className="text-xs font-bold uppercase tracking-wide text-red-500 hover:text-red-700 transition-colors cursor-pointer shrink-0"
-                >
-                  Remove
-                </button>
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={() => handleCopyLoginLink(c.id)}
+                    className="text-xs font-bold uppercase tracking-wide text-brand-gray hover:text-brand-black transition-colors cursor-pointer"
+                  >
+                    Copy Link
+                  </button>
+                  <button
+                    onClick={() => handleDelete(c.id, c.name)}
+                    className="text-xs font-bold uppercase tracking-wide text-red-500 hover:text-red-700 transition-colors cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

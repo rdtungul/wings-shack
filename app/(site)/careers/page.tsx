@@ -230,7 +230,7 @@ export default function CareersPage() {
               {error && (
                 <p className="text-sm text-red-600 mb-3">{error}</p>
               )}
-              <Button type="submit" variant="primary" className="w-full py-4 text-base" disabled={loading}>
+              <Button type="submit" variant="primary" className="w-full py-4 text-base" loading={loading}>
                 {loading ? 'Submitting…' : 'Submit Application'}
               </Button>
               <p className="text-xs text-brand-gray text-center mt-4">

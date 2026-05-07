@@ -11,7 +11,7 @@ export async function GET() {
 
   const clerks = await prisma.user.findMany({
     where: { role: 'CLERK' },
-    select: { id: true, clerkId: true, email: true, name: true, createdAt: true },
+    select: { id: true, clerkId: true, email: true, name: true, username: true, createdAt: true },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   const { firstName, lastName, username, email, password } = await req.json()
 
-  if (!firstName || !lastName || !username || !password) {
+  if (!firstName || !lastName || !username || !email || !password) {
     return Response.json({ error: 'All fields are required' }, { status: 400 })
   }
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   let clerkUser
   try {
     clerkUser = await client.users.createUser({
-      ...(email ? { emailAddress: [email] } : {}),
+      emailAddress: [email],
       username,
       password,
       firstName,
@@ -53,11 +53,12 @@ export async function POST(req: NextRequest) {
     data: {
       clerkId: clerkUser.id,
       name: `${firstName} ${lastName}`,
-      email: email || null,
+      username,
+      email,
       role: 'CLERK',
       allowedLocations: [],
     },
-    select: { id: true, clerkId: true, email: true, name: true, createdAt: true },
+    select: { id: true, clerkId: true, email: true, name: true, username: true, createdAt: true },
   })
 
   return Response.json(clerk, { status: 201 })

@@ -1,14 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { SignIn, useSignIn } from '@clerk/nextjs'
+import { SignIn } from '@clerk/nextjs'
 
 const inputCls =
   'w-full border border-brand-lightgray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-red bg-white text-brand-black'
 const labelCls = 'block text-xs font-bold uppercase tracking-widest text-brand-gray mb-1.5'
 
 function ManualLoginForm({ onBack }: { onBack: () => void }) {
-  const { signIn } = useSignIn()
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,27 +18,17 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
     setLoading(true)
     setError(null)
     try {
-      // Resolve username → email (Clerk needs email if username sign-in isn't enabled)
-      const resolved = await fetch('/api/admin/auth/resolve', {
+      const res = await fetch('/api/admin/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier }),
-      }).then((r) => r.json()).then((d) => d.identifier as string).catch(() => identifier)
-
-      // Single step: identifier + password together completes the sign-in
-      const { error: createErr } = await signIn.create({ identifier: resolved, password })
-      if (createErr) { setError(createErr.message ?? 'Invalid credentials'); return }
-
-      // Activate session — decorateUrl handles Safari ITP
-      const { error: finalErr } = await signIn.finalize({
-        navigate: ({ decorateUrl }) => { window.location.href = decorateUrl('/admin') },
+        body: JSON.stringify({ identifier, password }),
       })
-      if (finalErr) { setError(finalErr.message ?? 'Sign-in failed') }
-    } catch (err: unknown) {
-      const msg = (err as { errors?: Array<{ message: string }> }).errors?.[0]?.message
-        ?? (err instanceof Error ? err.message : null)
-        ?? 'Login failed'
-      setError(msg)
+      const data = await res.json()
+      if (!res.ok) { setError(data.error ?? 'Invalid credentials'); return }
+      // __clerk_ticket in URL is handled automatically by the Clerk SignIn component
+      window.location.href = `/admin/login?__clerk_ticket=${encodeURIComponent(data.token)}`
+    } catch {
+      setError('Login failed')
     } finally {
       setLoading(false)
     }
@@ -92,51 +81,19 @@ function ManualLoginForm({ onBack }: { onBack: () => void }) {
   )
 }
 
-function TokenSignIn({ token }: { token: string }) {
-  const { signIn } = useSignIn()
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!token || !signIn) return
-    signIn.create({ strategy: 'ticket', ticket: token })
-      .then(({ error: createErr }) => {
-        if (createErr) { setError(createErr.message ?? 'Invalid or expired link'); return }
-        return signIn.finalize({
-          navigate: ({ decorateUrl }) => { window.location.href = decorateUrl('/admin') },
-        })
-      })
-      .then((result) => {
-        if (result && result.error) setError(result.error.message ?? 'Sign-in failed')
-      })
-      .catch((err: unknown) => {
-        const msg = (err as { errors?: Array<{ message: string }> }).errors?.[0]?.message
-          ?? (err instanceof Error ? err.message : null)
-          ?? 'Sign-in failed'
-        setError(msg)
-      })
-  }, [token, signIn])
-
-  return (
-    <div className="bg-white rounded-2xl p-8 shadow-2xl text-center space-y-3">
-      {error ? (
-        <>
-          <p className="text-sm text-red-600">{error}</p>
-          <p className="text-xs text-brand-gray">This link may have expired. Ask an admin for a new one.</p>
-        </>
-      ) : (
-        <p className="text-sm text-brand-gray">Signing you in…</p>
-      )}
-    </div>
-  )
-}
-
 export default function AdminLoginPage() {
-  const [token, setToken] = useState<string | null>(null)
   const [mode, setMode] = useState<'clerk' | 'manual'>('clerk')
+  const [hasTicket, setHasTicket] = useState(false)
 
   useEffect(() => {
-    const t = new URLSearchParams(window.location.search).get('token')
-    if (t) setToken(t)
+    const params = new URLSearchParams(window.location.search)
+    // ?token= is the legacy magic-link param — rewrite to __clerk_ticket
+    const legacyToken = params.get('token')
+    if (legacyToken) {
+      window.location.replace(`/admin/login?__clerk_ticket=${encodeURIComponent(legacyToken)}`)
+      return
+    }
+    if (params.has('__clerk_ticket')) setHasTicket(true)
   }, [])
 
   return (
@@ -149,8 +106,20 @@ export default function AdminLoginPage() {
           <p className="text-white/50 text-sm mt-2 uppercase tracking-widest">Admin Portal</p>
         </div>
 
-        {token ? (
-          <TokenSignIn token={token} />
+        {hasTicket ? (
+          <SignIn
+            fallbackRedirectUrl="/admin"
+            appearance={{
+              elements: {
+                card: 'bg-white rounded-2xl shadow-2xl',
+                headerTitle: 'hidden',
+                headerSubtitle: 'hidden',
+                socialButtonsBlockButton: 'hidden',
+                dividerRow: 'hidden',
+                footerAction: 'hidden',
+              },
+            }}
+          />
         ) : mode === 'clerk' ? (
           <>
             <SignIn

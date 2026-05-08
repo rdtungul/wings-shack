@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
+import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/auth'
 
@@ -24,7 +25,8 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const { firstName, lastName, username, email, password } = await req.json()
+  const { firstName, lastName, username: rawUsername, email, password } = await req.json()
+  const username = rawUsername?.trim().toLowerCase()
 
   if (!firstName || !lastName || !username || !email || !password) {
     return Response.json({ error: 'All fields are required' }, { status: 400 })
@@ -49,12 +51,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: msg }, { status: 400 })
   }
 
+  const passwordHash = await bcrypt.hash(password, 12)
+
   const clerk = await prisma.user.create({
     data: {
       clerkId: clerkUser.id,
       name: `${firstName} ${lastName}`,
       username,
       email,
+      passwordHash,
       role: 'CLERK',
       allowedLocations: [],
     },

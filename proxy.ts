@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const isPublic = createRouteMatcher(['/admin/login(.*)', '/api/admin/auth/resolve'])
+const isPublic = createRouteMatcher(['/admin/login(.*)', '/api/admin/auth/resolve', '/api/admin/auth/login'])
 const isApiRoute = createRouteMatcher(['/api/(.*)'])
 
 export const proxy = clerkMiddleware(async (auth, req) => {
